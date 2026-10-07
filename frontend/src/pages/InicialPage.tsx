@@ -1,18 +1,25 @@
 import { useState, type FormEvent } from 'react'
+import GameScreen from '../components/GameScreen'
+import PlayButton from '../components/PlayButton'
 import logo from '../components/logo.png'
-import playButton from '../components/playButtom.png'
-import { submitPlayerNames } from '../services/initialApi'
+import {
+  submitPlayerNames,
+  type PlayerNamesResponse,
+} from '../services/initialApi'
 import './InicialPage.css'
 
 const MIN_PLAYERS = 2
 const MAX_PLAYERS = 4
 
-type PageStep = 'landing' | 'players' | 'ready'
+type PageStep = 'landing' | 'players'
 
-function InicialPage() {
+interface InicialPageProps {
+  onPlayersConfirmed: (response: PlayerNamesResponse) => void
+}
+
+function InicialPage({ onPlayersConfirmed }: InicialPageProps) {
   const [step, setStep] = useState<PageStep>('landing')
   const [playerNames, setPlayerNames] = useState(['', ''])
-  const [confirmedNames, setConfirmedNames] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -45,8 +52,7 @@ function InicialPage() {
 
     try {
       const response = await submitPlayerNames(playerNames)
-      setConfirmedNames(response.players)
-      setStep('ready')
+      onPlayersConfirmed(response)
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -59,7 +65,7 @@ function InicialPage() {
   }
 
   return (
-    <main className="initial-page">
+    <GameScreen className="initial-page">
       <div className={`initial-content initial-content--${step}`}>
         <div className="game-logo" aria-hidden="true">
           <img src={logo} alt="" />
@@ -67,18 +73,14 @@ function InicialPage() {
         <h1 className="visually-hidden">Frete Fechado</h1>
 
         {step === 'landing' && (
-          <button
-            className="play-button"
-            type="button"
-            onClick={() => setStep('players')}
-            aria-label="Jogar"
-          >
-            <img src={playButton} alt="" />
-          </button>
+          <PlayButton onClick={() => setStep('players')} />
         )}
 
         {step === 'players' && (
-          <section className="player-panel" aria-labelledby="player-panel-title">
+          <section
+            className="game-panel player-panel"
+            aria-labelledby="player-panel-title"
+          >
             <h2 id="player-panel-title">Quem vai jogar?</h2>
             <p>Informe de 2 a 4 nomes para preparar a partida.</p>
 
@@ -142,22 +144,8 @@ function InicialPage() {
             </form>
           </section>
         )}
-
-        {step === 'ready' && (
-          <section className="player-panel player-panel--ready" aria-live="polite">
-            <h2>Jogadores prontos!</h2>
-            <p>{confirmedNames.join(', ')}</p>
-            <button
-              className="secondary-action"
-              type="button"
-              onClick={() => setStep('players')}
-            >
-              Editar nomes
-            </button>
-          </section>
-        )}
       </div>
-    </main>
+    </GameScreen>
   )
 }
 

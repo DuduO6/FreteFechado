@@ -1,7 +1,40 @@
 import json
+from unittest.mock import patch
 
 from django.test import TestCase
 from django.urls import reverse
+
+from .services import select_starting_player_index
+
+
+class FixedRandomSource:
+    def __init__(self, result: int) -> None:
+        self.result = result
+        self.received_stop: int | None = None
+
+    def randrange(self, stop: int, /) -> int:
+        self.received_stop = stop
+        return self.result
+
+
+class SelectStartingPlayerTests(TestCase):
+    def test_selects_player_with_injected_random_source(self) -> None:
+        random_source = FixedRandomSource(result=2)
+
+        result = select_starting_player_index(
+            ['Ana', 'Beto', 'Caio', 'Duda'],
+            random_source,
+        )
+
+        self.assertEqual(result, 2)
+        self.assertEqual(random_source.received_stop, 4)
+
+    def test_rejects_empty_player_list(self) -> None:
+        with self.assertRaisesMessage(
+            ValueError,
+            'Não há jogadores disponíveis para o sorteio.',
+        ):
+            select_starting_player_index([])
 
 
 class ReceivePlayerNamesTests(TestCase):
@@ -15,14 +48,20 @@ class ReceivePlayerNamesTests(TestCase):
             content_type='application/json',
         )
 
-    def test_receives_and_normalizes_two_to_four_player_names(self) -> None:
+    @patch('inicial.views.select_starting_player_index', return_value=2)
+    def test_receives_names_and_selects_starting_player(self, select_mock) -> None:
         response = self.post_players(['  Ana  ', 'Beto', 'Caio', 'Duda'])
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.json(),
-            {'ok': True, 'players': ['Ana', 'Beto', 'Caio', 'Duda']},
+            response.json()['players'],
+            ['Ana', 'Beto', 'Caio', 'Duda'],
         )
+        self.assertEqual(response.json()['startingPlayerIndex'], 2)
+        self.assertEqual(response.json()['snapshot']['currentPlayerIndex'], 2)
+        self.assertEqual(response.json()['snapshot']['currentRound'], 1)
+        self.assertTrue(response.json()['snapshot']['gameId'])
+        select_mock.assert_called_once_with(['Ana', 'Beto', 'Caio', 'Duda'])
 
     def test_rejects_player_count_outside_allowed_range(self) -> None:
         for players in (['Ana'], ['A', 'B', 'C', 'D', 'E']):

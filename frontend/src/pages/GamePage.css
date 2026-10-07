@@ -1,0 +1,159 @@
+.game-page {
+  place-items: start center;
+  padding: 18px;
+}
+
+.game-layout {
+  width: min(100%, 1380px);
+  display: grid;
+  gap: 14px;
+}
+
+.game-hud,
+.game-controls {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 14px 20px;
+  border: 2px solid rgba(99, 51, 13, 0.72);
+  border-radius: 18px;
+  color: #3b210c;
+  background: rgba(255, 248, 222, 0.95);
+  box-shadow: 0 10px 25px rgba(26, 18, 4, 0.2);
+}
+
+.game-hud {
+  justify-content: space-between;
+}
+
+.game-hud > div {
+  display: grid;
+  gap: 2px;
+}
+
+.hud-label {
+  color: #87501c;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.game-controls {
+  justify-content: center;
+}
+
+.turn-actions {
+  min-width: min(100%, 520px);
+  text-align: center;
+}
+
+.turn-actions > p {
+  margin: 0 0 10px;
+  font-weight: 800;
+}
+
+.route-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.route-options button,
+.roll-button {
+  min-height: 44px;
+  padding: 10px 17px;
+  border: 2px solid #81400a;
+  border-radius: 12px;
+  color: #3e2105;
+  background: linear-gradient(#fff22e, #ffb20f);
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    filter 160ms ease,
+    transform 160ms ease;
+}
+
+.route-options button:hover:not(:disabled),
+.roll-button:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+}
+
+.route-options button:disabled,
+.roll-button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.roll-button {
+  min-width: 190px;
+  font-size: 1.05rem;
+}
+
+.game-action-error,
+.game-load-error {
+  color: #922817;
+  font-weight: 800;
+}
+
+.game-action-error {
+  margin: 10px 0 0;
+}
+
+.game-load-error,
+.board-loading {
+  padding: 28px;
+  border-radius: 18px;
+  background: rgba(255, 248, 222, 0.95);
+  text-align: center;
+}
+
+.game-finished {
+  margin: 0;
+  font-size: 1.12rem;
+}
+
+@media (max-width: 720px) {
+  .game-page {
+    padding: 10px;
+  }
+
+  .game-hud {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .game-hud > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .game-controls {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .route-options {
+    flex-direction: column;
+  }
+
+  .route-options button {
+    width: 100%;
+  }
+
+  .turn-actions {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-options button,
+  .roll-button {
+    transition: none;
+  }
+}

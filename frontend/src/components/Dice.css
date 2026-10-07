@@ -1,0 +1,37 @@
+.dice {
+  width: 112px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  flex: 0 0 auto;
+  position: relative;
+}
+
+.dice img {
+  width: 170%;
+  max-width: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 7px 5px rgba(54, 28, 5, 0.28));
+}
+
+.dice--rolling {
+  animation: dice-tumble 420ms ease-in-out infinite alternate;
+}
+
+@keyframes dice-tumble {
+  from {
+    transform: rotate(-8deg) scale(0.92);
+  }
+
+  to {
+    transform: rotate(9deg) scale(1.07);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dice--rolling {
+    animation: none;
+  }
+}

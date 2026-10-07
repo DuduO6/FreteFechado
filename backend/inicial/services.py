@@ -1,3 +1,8 @@
+from collections.abc import Sequence
+from random import SystemRandom
+from typing import Protocol
+
+
 MIN_PLAYERS = 2
 MAX_PLAYERS = 4
 MAX_NAME_LENGTH = 40
@@ -5,6 +10,10 @@ MAX_NAME_LENGTH = 40
 
 class InvalidPlayerNames(ValueError):
     """Raised when the initial player list cannot start a valid game."""
+
+
+class RandomSource(Protocol):
+    def randrange(self, stop: int, /) -> int: ...
 
 
 def validate_player_names(players: object) -> list[str]:
@@ -28,3 +37,14 @@ def validate_player_names(players: object) -> list[str]:
         normalized_names.append(normalized_name)
 
     return normalized_names
+
+
+def select_starting_player_index(
+    players: Sequence[str],
+    random_source: RandomSource | None = None,
+) -> int:
+    if not players:
+        raise InvalidPlayerNames('Não há jogadores disponíveis para o sorteio.')
+
+    source = random_source or SystemRandom()
+    return source.randrange(len(players))

@@ -1,0 +1,101 @@
+.waiting-room-panel {
+  width: min(100%, 620px);
+  text-align: center;
+}
+
+.waiting-room-kicker {
+  margin: 0 0 8px;
+  color: #a34c0d;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.waiting-room-description {
+  margin: 10px auto 22px;
+  color: #684322;
+}
+
+.player-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.player-list-item {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  box-sizing: border-box;
+  border: 2px solid #d5a353;
+  border-radius: 15px;
+  background: rgba(255, 253, 242, 0.88);
+  text-align: left;
+}
+
+.player-list-item--starting {
+  border-color: #e66d0b;
+  background: linear-gradient(100deg, #fff7bd, #ffd95c);
+  box-shadow: 0 7px 16px rgba(137, 66, 5, 0.2);
+}
+
+.player-position {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: #8c4b17;
+  font-weight: 900;
+}
+
+.player-name {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  font-size: 1.08rem;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.starting-badge {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #fff;
+  background: #b54412;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.starting-player-summary {
+  margin: 20px 0 0;
+  color: #5b3513;
+}
+
+.waiting-room-panel .play-button {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (max-width: 440px) {
+  .player-list-item {
+    gap: 9px;
+    padding-inline: 10px;
+  }
+
+  .starting-badge {
+    font-size: 0.66rem;
+  }
+}

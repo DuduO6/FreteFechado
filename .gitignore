@@ -4,3 +4,5 @@ docs/prompt.md
 backend/db.sqlite3
 backend/FreteFechado/__pycache__
 backend/inicial/__pycache__
+__pycache__/
+*.py[cod]

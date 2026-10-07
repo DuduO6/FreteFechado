@@ -1,8 +1,11 @@
 import axios from 'axios'
+import type { GameSnapshot } from '../types/game'
 
-interface PlayerNamesResponse {
+export interface PlayerNamesResponse {
   ok: true
   players: string[]
+  startingPlayerIndex: number
+  snapshot: GameSnapshot
 }
 
 interface ApiErrorResponse {

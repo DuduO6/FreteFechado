@@ -1,0 +1,66 @@
+.board {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  border: 3px solid rgba(74, 39, 10, 0.8);
+  border-radius: 18px;
+  background: #f7f2df;
+  box-shadow: 0 14px 32px rgba(27, 20, 8, 0.25);
+}
+
+.board-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.player-marker-position {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  transition:
+    left 260ms ease,
+    top 260ms ease;
+}
+
+.player-marker {
+  width: clamp(24px, 2.7vw, 38px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  transform: translate(var(--offset-x), var(--offset-y));
+  border: 3px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--marker-color);
+  box-shadow: 0 3px 8px rgba(30, 16, 3, 0.55);
+  font-size: clamp(0.68rem, 1.3vw, 0.95rem);
+  font-weight: 900;
+}
+
+.player-marker--current {
+  outline: 3px solid #fff229;
+  outline-offset: 2px;
+}
+
+.board-error {
+  padding: 40px;
+  border-radius: 18px;
+  color: #8c2517;
+  background: #fff2dd;
+  font-weight: 800;
+  text-align: center;
+}
+
+@media (max-width: 620px) {
+  .player-marker {
+    border-width: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-marker-position {
+    transition: none;
+  }
+}
