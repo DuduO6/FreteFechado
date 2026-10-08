@@ -1,14 +1,17 @@
 import { useMemo, useState, type CSSProperties } from 'react'
 import boardImage from './map/Mapa Rural Colorido de Tabuleiro.png'
+import problemImage from './map/problema.png'
+import fuelTickImage from './spr_space_fuel_tick.png'
+import stationImage from './spr_space_station.png'
+import { getPlayerTruck } from './truckAssets'
 import type { BoardDefinition, GamePlayer } from '../types/game'
 import './Board.css'
 
-const MARKER_COLORS = ['#e63f2e', '#237edb', '#f3b51b', '#7b45bf']
 const MARKER_OFFSETS = [
-  [-10, -10],
-  [10, -10],
-  [-10, 10],
-  [10, 10],
+  [-15, -15],
+  [15, -15],
+  [-15, 15],
+  [15, 15],
 ]
 
 interface BoardProps {
@@ -19,7 +22,6 @@ interface BoardProps {
 }
 
 interface MarkerStyle extends CSSProperties {
-  '--marker-color': string
   '--offset-x': string
   '--offset-y': string
 }
@@ -49,6 +51,32 @@ function Board({ board, players, positions, currentPlayerIndex }: BoardProps) {
         onError={() => setImageFailed(true)}
       />
 
+      {board.nodes.map((node) => {
+        const isStation = node.tags?.includes('FUEL_STATION')
+        const isProblem = node.tags?.includes('PROBLEM')
+        if (!isStation && !isProblem) {
+          return null
+        }
+        return (
+          <div
+            className="board-special-space"
+            key={`special-${node.id}`}
+            style={{ left: `${node.x}%`, top: `${node.y}%` }}
+            aria-label={isStation ? 'Posto de combustível' : 'Casa de problema'}
+          >
+            {isStation && (
+              <>
+                <img className="board-special-space__station" src={stationImage} alt="" />
+                <img className="board-special-space__fuel" src={fuelTickImage} alt="" />
+              </>
+            )}
+            {isProblem && (
+              <img className="board-special-space__problem" src={problemImage} alt="" />
+            )}
+          </div>
+        )
+      })}
+
       {players.map((player, playerIndex) => {
         const position = positions[playerIndex]
         const node = nodesById.get(position)
@@ -62,7 +90,6 @@ function Board({ board, players, positions, currentPlayerIndex }: BoardProps) {
         const style: MarkerStyle = {
           left: `${node.x}%`,
           top: `${node.y}%`,
-          '--marker-color': MARKER_COLORS[playerIndex] ?? '#333',
           '--offset-x': `${offsetX}px`,
           '--offset-y': `${offsetY}px`,
         }
@@ -74,14 +101,14 @@ function Board({ board, players, positions, currentPlayerIndex }: BoardProps) {
             key={player.id}
             aria-label={`${player.name} em ${node.name ?? node.id}`}
           >
-            <span
+            <img
               className={`player-marker${
                 playerIndex === currentPlayerIndex ? ' player-marker--current' : ''
               }`}
+              src={getPlayerTruck(player)}
+              alt=""
               title={player.name}
-            >
-              {playerIndex + 1}
-            </span>
+            />
           </div>
         )
       })}

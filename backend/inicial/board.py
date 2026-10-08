@@ -30,6 +30,11 @@ def load_board() -> dict[str, Any]:
             raise InvalidBoardConfiguration(f"Tipo inválido no node {node.get('id')}.")
         if not 0 <= node.get('x', -1) <= 100 or not 0 <= node.get('y', -1) <= 100:
             raise InvalidBoardConfiguration(f"Coordenada inválida no node {node.get('id')}.")
+        tags = node.get('tags', [])
+        if not isinstance(tags, list) or any(
+            tag not in {'FUEL_STATION', 'PROBLEM'} for tag in tags
+        ):
+            raise InvalidBoardConfiguration(f"Tags inválidas no node {node.get('id')}.")
 
     route_ids: set[str] = set()
     node_by_id = {node['id']: node for node in nodes}

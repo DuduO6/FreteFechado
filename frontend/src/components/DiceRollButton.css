@@ -1,0 +1,46 @@
+.dice-roll-button {
+  width: clamp(88px, 9vw, 122px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border: 4px solid #6f2609;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #fff735, #ffae0d);
+  box-shadow:
+    inset 0 0 0 4px #ff7b0c,
+    0 10px 12px rgba(58, 25, 2, 0.35);
+  cursor: pointer;
+  transition:
+    filter 180ms ease,
+    transform 180ms ease;
+}
+
+.dice-roll-button .dice {
+  width: 84%;
+}
+
+.dice-roll-button:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: scale(1.04);
+}
+
+.dice-roll-button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.dice-roll-button:focus-visible {
+  outline: 4px solid #fff8ca;
+  outline-offset: 4px;
+}
+
+.dice-roll-button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dice-roll-button {
+    transition: none;
+  }
+}

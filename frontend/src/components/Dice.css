@@ -1,19 +1,20 @@
 .dice {
   width: 112px;
   aspect-ratio: 1;
-  overflow: hidden;
   flex: 0 0 auto;
   position: relative;
 }
 
 .dice img {
-  width: 170%;
-  max-width: none;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
   filter: drop-shadow(0 7px 5px rgba(54, 28, 5, 0.28));
+}
+
+.dice--overlay {
+  width: clamp(190px, 24vw, 330px);
 }
 
 .dice--rolling {

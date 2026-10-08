@@ -1,0 +1,188 @@
+@font-face {
+  font-family: 'Nunito';
+  src: url('../assets/fonts/Nunito-Variable.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+}
+
+.player-info-card {
+  width: clamp(210px, 18vw, 260px);
+  aspect-ratio: 3 / 2;
+  position: relative;
+  color: #211604;
+  filter: drop-shadow(0 6px 7px rgba(14, 9, 2, 0.34));
+  font-family: 'Nunito', ui-rounded, sans-serif;
+  font-size: clamp(0.58rem, 0.72vw, 0.72rem);
+}
+
+.player-info-card__image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  transition:
+    filter 200ms ease,
+    opacity 200ms ease;
+}
+
+.player-info-card__header,
+.player-info-card__field {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.player-info-card__header {
+  top: 15.4%;
+  right: 8%;
+  left: 8%;
+  height: 16.5%;
+  justify-content: center;
+  gap: 5px;
+  overflow: hidden;
+  font-size: 1.3em;
+  font-weight: 900;
+  text-align: center;
+}
+
+.player-info-card__header strong {
+  overflow: hidden;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-info-card__current-indicator {
+  width: 16%;
+  aspect-ratio: 1;
+  position: absolute;
+  z-index: 3;
+  top: 2.5%;
+  left: 3%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 2px rgba(40, 18, 2, 0.58));
+  animation: current-player-indicator 1.5s ease-in-out infinite alternate;
+}
+
+.player-info-card__details {
+  margin: 0;
+}
+
+.player-info-card__field {
+  height: 16.6%;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.player-info-card__field dt,
+.player-info-card__field dd {
+  margin: 0;
+}
+
+.player-info-card__field dt {
+  flex: 0 1 auto;
+  overflow: hidden;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-info-card__field dd {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  font-weight: 700;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-info-card__field--turn {
+  top: 34.6%;
+  right: 51%;
+  left: 18.2%;
+}
+
+.player-info-card__field--contract {
+  top: 34.6%;
+  right: 6.5%;
+  left: 59.5%;
+  gap: 2px;
+}
+
+.player-info-card__field--waiting {
+  top: 53.5%;
+  right: 8.2%;
+  left: 19.3%;
+}
+
+.player-info-card__fuel img {
+  width: 1.65em;
+  height: 1.65em;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 1px rgba(47, 26, 4, 0.4));
+}
+
+.player-info-card__fuel img.is-empty {
+  opacity: 0.22;
+  filter: grayscale(1);
+}
+
+.player-info-card__field--balance {
+  top: 71.1%;
+  right: 8.2%;
+  left: 20.2%;
+}
+
+.player-info-card__truck {
+  width: 2em;
+  aspect-ratio: 1;
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(35, 18, 2, 0.55));
+}
+
+.player-info-card--current {
+  filter:
+    drop-shadow(0 0 5px var(--player-color))
+    drop-shadow(0 7px 7px rgba(14, 9, 2, 0.35));
+}
+
+.player-info-card--empty .player-info-card__image {
+  filter: brightness(0.34) saturate(0.25);
+  opacity: 0.86;
+}
+
+.player-info-card--empty .player-info-card__header,
+.player-info-card--empty .player-info-card__details {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+@keyframes current-player-indicator {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.16);
+  }
+}
+
+@media (max-width: 720px) {
+  .player-info-card {
+    width: min(36vw, 152px);
+    font-size: clamp(0.42rem, 1.55vw, 0.56rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-info-card__current-indicator {
+    animation: none;
+  }
+}

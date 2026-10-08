@@ -12,13 +12,21 @@ interface DiceProps {
   face: number
   isRolling: boolean
   onAssetError: () => void
+  variant?: 'control' | 'overlay'
 }
 
-function Dice({ face, isRolling, onAssetError }: DiceProps) {
+function Dice({
+  face,
+  isRolling,
+  onAssetError,
+  variant = 'control',
+}: DiceProps) {
   const source = DICE_FACES[face - 1]
 
   return (
-    <div className={`dice${isRolling ? ' dice--rolling' : ''}`}>
+    <div
+      className={`dice dice--${variant}${isRolling ? ' dice--rolling' : ''}`}
+    >
       <img
         src={source}
         alt={`Dado mostrando ${face}`}

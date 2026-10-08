@@ -1,12 +1,20 @@
 .game-page {
-  place-items: start center;
-  padding: 18px;
+  width: 100vw;
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+  place-items: center;
+  padding: 0;
+  background: #102c25;
 }
 
 .game-layout {
-  width: min(100%, 1380px);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
   display: grid;
-  gap: 14px;
+  place-items: center;
 }
 
 .game-hud,
@@ -15,7 +23,9 @@
   display: flex;
   align-items: center;
   gap: 22px;
-  padding: 14px 20px;
+  z-index: 4;
+  position: absolute;
+  padding: 10px 18px;
   border: 2px solid rgba(99, 51, 13, 0.72);
   border-radius: 18px;
   color: #3b210c;
@@ -24,7 +34,33 @@
 }
 
 .game-hud {
+  width: min(calc(100% - 460px), 700px);
+  top: 16px;
+  left: 50%;
   justify-content: space-between;
+  transform: translateX(-50%);
+}
+
+.player-info-cards {
+  z-index: 6;
+  position: absolute;
+  inset: 8px;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  align-content: space-between;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.player-info-cards .player-info-card:nth-child(2),
+.player-info-cards .player-info-card:nth-child(4) {
+  justify-self: end;
+}
+
+.player-info-cards .player-info-card:nth-child(3),
+.player-info-cards .player-info-card:nth-child(4) {
+  align-self: end;
 }
 
 .game-hud > div {
@@ -40,12 +76,52 @@
   text-transform: uppercase;
 }
 
-.game-controls {
+.restart-button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: 5px;
+  padding: 7px 11px;
+  border: 2px solid #81400a;
+  border-radius: 11px;
+  color: #3e2105;
+  background: linear-gradient(#fff22e, #ffb20f);
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    filter 160ms ease,
+    transform 160ms ease;
+}
+
+.restart-button:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.restart-button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.game-controls {
+  max-width: min(calc(100% - 32px), 920px);
+  right: auto;
+  bottom: 16px;
+  left: 50%;
+  justify-content: center;
+  transform: translateX(-50%);
+}
+
+.game-controls--dice {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .turn-actions {
-  min-width: min(100%, 520px);
+  min-width: 0;
   text-align: center;
 }
 
@@ -61,8 +137,7 @@
   gap: 8px;
 }
 
-.route-options button,
-.roll-button {
+.route-options button {
   min-height: 44px;
   padding: 10px 17px;
   border: 2px solid #81400a;
@@ -76,21 +151,69 @@
     transform 160ms ease;
 }
 
-.route-options button:hover:not(:disabled),
-.roll-button:hover:not(:disabled) {
+.route-options button:hover:not(:disabled) {
   filter: brightness(1.05);
   transform: translateY(-2px);
 }
 
-.route-options button:disabled,
-.roll-button:disabled {
+.route-options button:disabled {
   cursor: wait;
   opacity: 0.58;
 }
 
-.roll-button {
-  min-width: 190px;
-  font-size: 1.05rem;
+.game-page .board {
+  width: max(100vw, 177.69svh);
+  max-width: none;
+  flex: 0 0 auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-aspect-ratio: 4 / 3) {
+  .game-page .board {
+    width: 100vw;
+  }
+}
+
+.dice-roll-overlay {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  overflow: visible;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  transition: background-color 480ms ease;
+  animation: dice-overlay-enter 260ms ease;
+}
+
+.dice-roll-overlay__stage {
+  padding: 32px;
+  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dice-roll-overlay--revealing {
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0);
+}
+
+.dice-roll-overlay--revealing .dice-roll-overlay__stage {
+  transform: translateY(clamp(70px, 14svh, 130px)) scale(0.92);
+}
+
+@keyframes dice-overlay-enter {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+
+  to {
+    background: rgba(0, 0, 0, 0.4);
+  }
 }
 
 .game-action-error,
@@ -105,6 +228,8 @@
 
 .game-load-error,
 .board-loading {
+  z-index: 1;
+  position: absolute;
   padding: 28px;
   border-radius: 18px;
   background: rgba(255, 248, 222, 0.95);
@@ -117,14 +242,10 @@
 }
 
 @media (max-width: 720px) {
-  .game-page {
-    padding: 10px;
-  }
-
   .game-hud {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 8px;
+    width: clamp(86px, 28vw, 108px);
+    top: 8px;
+    padding: 7px 8px;
   }
 
   .game-hud > div {
@@ -133,9 +254,34 @@
     gap: 12px;
   }
 
+  .game-hud > div:not(:first-child) {
+    display: none;
+  }
+
+  .restart-button {
+    position: absolute;
+    top: calc(100% + 64px);
+    left: 50%;
+    min-height: 34px;
+    padding: 5px 9px;
+    transform: translateX(-50%);
+  }
+
+  .restart-button:hover:not(:disabled) {
+    transform: translateX(-50%) translateY(-1px);
+  }
+
+  .player-info-cards {
+    inset: 6px;
+  }
+
   .game-controls {
+    max-width: calc(100% - 20px);
+    top: 50%;
+    bottom: auto;
     flex-direction: column;
     gap: 6px;
+    transform: translate(-50%, -50%);
   }
 
   .route-options {
@@ -153,7 +299,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .route-options button,
-  .roll-button {
+  .restart-button,
+  .dice-roll-overlay,
+  .dice-roll-overlay__stage {
     transition: none;
+    animation: none;
   }
 }

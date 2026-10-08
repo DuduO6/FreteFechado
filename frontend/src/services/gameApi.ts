@@ -80,3 +80,36 @@ export async function rollAndMove(
     throw requestMessage(error, 'Não foi possível jogar o dado.')
   }
 }
+
+export async function refuelGame(
+  gameId: string,
+  units: number,
+  expectedPlayerIndex: number,
+  expectedRound: number,
+): Promise<GameSnapshot> {
+  try {
+    const response = await axios.post<SnapshotResponse>(
+      `/api/inicial/games/${gameId}/refuel/`,
+      { units, expectedPlayerIndex, expectedRound },
+    )
+    return response.data.snapshot
+  } catch (error) {
+    throw requestMessage(error, 'Não foi possível concluir o abastecimento.')
+  }
+}
+
+export async function acknowledgeProblemEvent(
+  gameId: string,
+  expectedPlayerIndex: number,
+  expectedRound: number,
+): Promise<GameSnapshot> {
+  try {
+    const response = await axios.post<SnapshotResponse>(
+      `/api/inicial/games/${gameId}/event/acknowledge/`,
+      { expectedPlayerIndex, expectedRound },
+    )
+    return response.data.snapshot
+  } catch (error) {
+    throw requestMessage(error, 'Não foi possível concluir o evento.')
+  }
+}

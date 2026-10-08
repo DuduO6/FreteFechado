@@ -8,7 +8,9 @@ from django.views.decorators.http import require_GET, require_POST
 from .board import load_board
 from .game_services import (
     GameActionError,
+    acknowledge_problem_card,
     create_game_session,
+    refuel_player,
     roll_and_move,
     select_route,
     serialize_game,
@@ -124,3 +126,46 @@ def roll_game(request: HttpRequest, game_id: str) -> JsonResponse:
     return JsonResponse(
         {'ok': True, 'snapshot': serialize_game(game), 'movement': movement}
     )
+
+
+@csrf_exempt
+@require_POST
+def refuel_game(request: HttpRequest, game_id: str) -> JsonResponse:
+    payload = _read_json_object(request)
+    if isinstance(payload, JsonResponse):
+        return payload
+    try:
+        game = refuel_player(
+            game_id,
+            payload.get('units'),
+            int(payload.get('expectedPlayerIndex', -1)),
+            int(payload.get('expectedRound', -1)),
+        )
+    except GameSession.DoesNotExist:
+        return JsonResponse({'ok': False, 'code': 'GAME_NOT_FOUND', 'message': 'Partida não encontrada.'}, status=404)
+    except (TypeError, ValueError) as error:
+        if isinstance(error, GameActionError):
+            return _action_error(error)
+        return JsonResponse({'ok': False, 'code': 'INVALID_INPUT', 'message': 'Dados da ação inválidos.'}, status=400)
+    return JsonResponse({'ok': True, 'snapshot': serialize_game(game)})
+
+
+@csrf_exempt
+@require_POST
+def acknowledge_game_event(request: HttpRequest, game_id: str) -> JsonResponse:
+    payload = _read_json_object(request)
+    if isinstance(payload, JsonResponse):
+        return payload
+    try:
+        game = acknowledge_problem_card(
+            game_id,
+            int(payload.get('expectedPlayerIndex', -1)),
+            int(payload.get('expectedRound', -1)),
+        )
+    except GameSession.DoesNotExist:
+        return JsonResponse({'ok': False, 'code': 'GAME_NOT_FOUND', 'message': 'Partida não encontrada.'}, status=404)
+    except (TypeError, ValueError) as error:
+        if isinstance(error, GameActionError):
+            return _action_error(error)
+        return JsonResponse({'ok': False, 'code': 'INVALID_INPUT', 'message': 'Dados da ação inválidos.'}, status=400)
+    return JsonResponse({'ok': True, 'snapshot': serialize_game(game)})

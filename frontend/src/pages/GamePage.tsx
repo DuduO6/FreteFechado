@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import Board from '../components/Board'
 import Dice from '../components/Dice'
+import DiceRollButton from '../components/DiceRollButton'
 import GameScreen from '../components/GameScreen'
+import PlayerInfoCard from '../components/PlayerInfoCard'
+import ProblemCardModal from '../components/ProblemCardModal'
 import { loadBoard } from '../services/gameApi'
 import { useLobbyStore } from '../store/lobbyStore'
 import type { BoardDefinition, RollMoveResponse } from '../types/game'
@@ -9,6 +12,9 @@ import './GamePage.css'
 
 const DICE_FRAME_INTERVALS = [65, 75, 90, 110, 140, 180, 220]
 const MOVEMENT_STEP_DURATION = 280
+const DICE_REVEAL_DURATION = 480
+
+type DiceOverlayPhase = 'hidden' | 'rolling' | 'revealing'
 
 function delay(milliseconds: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, milliseconds))
@@ -25,16 +31,23 @@ function GamePage() {
   const refreshGame = useLobbyStore((state) => state.refreshGame)
   const selectRoute = useLobbyStore((state) => state.selectRoute)
   const rollDice = useLobbyStore((state) => state.rollDice)
+  const restartGame = useLobbyStore((state) => state.restartGame)
+  const refuel = useLobbyStore((state) => state.refuel)
+  const acknowledgeEvent = useLobbyStore((state) => state.acknowledgeEvent)
   const setSnapshot = useLobbyStore((state) => state.setSnapshot)
   const [board, setBoard] = useState<BoardDefinition | null>(null)
   const [animatedPositions, setAnimatedPositions] = useState<string[] | null>(null)
   const [diceFace, setDiceFace] = useState(1)
   const [isRolling, setIsRolling] = useState(false)
+  const [diceOverlayPhase, setDiceOverlayPhase] =
+    useState<DiceOverlayPhase>('hidden')
   const [isMoving, setIsMoving] = useState(false)
   const [isSelectingRoute, setIsSelectingRoute] = useState(false)
+  const [isResolvingAction, setIsResolvingAction] = useState(false)
   const [error, setError] = useState('')
 
-  const isBusy = isRolling || isMoving || isSelectingRoute
+  const isBusy =
+    diceOverlayPhase !== 'hidden' || isMoving || isSelectingRoute || isResolvingAction
   const boardNodeIds = useMemo(
     () => new Set(board?.nodes.map((node) => node.id) ?? []),
     [board],
@@ -129,11 +142,15 @@ function GamePage() {
 
     setError('')
     setIsRolling(true)
+    setDiceOverlayPhase('rolling')
     let response: RollMoveResponse | null = null
     try {
       response = await rollDice()
       await animateDice(response.movement.dice)
       setIsRolling(false)
+      setDiceOverlayPhase('revealing')
+      await delay(DICE_REVEAL_DURATION)
+      setDiceOverlayPhase('hidden')
       setIsMoving(true)
       setAnimatedPositions(activeSnapshot.players.map((player) => player.position))
       await animateMovement(response)
@@ -144,10 +161,44 @@ function GamePage() {
         setSnapshot(response.snapshot)
       }
       setError(errorMessage(rollError))
+      setIsRolling(false)
+      setDiceOverlayPhase('revealing')
+      await delay(DICE_REVEAL_DURATION)
     } finally {
       setIsRolling(false)
+      setDiceOverlayPhase('hidden')
       setIsMoving(false)
       setAnimatedPositions(null)
+    }
+  }
+
+  async function handleRefuel(units: number) {
+    if (isBusy) {
+      return
+    }
+    setError('')
+    setIsResolvingAction(true)
+    try {
+      await refuel(units)
+    } catch (refuelError) {
+      setError(errorMessage(refuelError))
+    } finally {
+      setIsResolvingAction(false)
+    }
+  }
+
+  async function handleEventConfirmation() {
+    if (isBusy) {
+      return
+    }
+    setError('')
+    setIsResolvingAction(true)
+    try {
+      await acknowledgeEvent()
+    } catch (eventError) {
+      setError(errorMessage(eventError))
+    } finally {
+      setIsResolvingAction(false)
     }
   }
 
@@ -169,6 +220,15 @@ function GamePage() {
               {isRolling ? 'Lançando dado' : isMoving ? 'Em movimento' : 'Aguardando jogada'}
             </strong>
           </div>
+          <button
+            className="restart-button"
+            type="button"
+            disabled={isBusy}
+            onClick={restartGame}
+          >
+            <span aria-hidden="true">↺</span>
+            Recomeçar
+          </button>
         </header>
 
         {board ? (
@@ -182,13 +242,26 @@ function GamePage() {
           <div className="board-loading" aria-live="polite">Carregando mapa…</div>
         )}
 
-        <section className="game-controls" aria-label="Controles da jogada">
-          <Dice
-            face={diceFace}
-            isRolling={isRolling}
-            onAssetError={() => setError('Não foi possível carregar uma face do dado.')}
-          />
+        <aside className="player-info-cards" aria-label="Informações dos jogadores">
+          {Array.from({ length: 4 }, (_, slot) => (
+            <PlayerInfoCard
+              key={activeSnapshot.players[slot]?.id ?? `empty-${slot}`}
+              player={activeSnapshot.players[slot]}
+              slot={slot}
+            />
+          ))}
+        </aside>
 
+        <section
+          className={`game-controls${
+            activeSnapshot.phase === 'WAITING_FOR_ROUTE' ||
+            activeSnapshot.phase === 'WAITING_FOR_REFUEL' ||
+            activeSnapshot.status === 'FINISHED'
+              ? ' game-controls--routes'
+              : ' game-controls--dice'
+          }`}
+          aria-label="Controles da jogada"
+        >
           <div className="turn-actions">
             {activeSnapshot.status === 'FINISHED' ? (
               <p className="game-finished">Partida encerrada após 15 rodadas.</p>
@@ -208,20 +281,75 @@ function GamePage() {
                   ))}
                 </div>
               </>
+            ) : activeSnapshot.phase === 'WAITING_FOR_REFUEL' && activeSnapshot.refuelOffer ? (
+              <>
+                <p>
+                  {activeSnapshot.refuelOffer.reason === 'OUT_OF_FUEL'
+                    ? 'O combustível acabou. Abasteça ao menos 1 nível para continuar.'
+                    : `Abastecer ${currentPlayer.name}? Cada nível custa R$ ${activeSnapshot.refuelOffer.unitPrice}.`}
+                </p>
+                <div className="route-options refuel-options">
+                  {!activeSnapshot.refuelOffer.required && (
+                    <button type="button" disabled={isBusy} onClick={() => void handleRefuel(0)}>
+                      Não abastecer
+                    </button>
+                  )}
+                  {Array.from(
+                    { length: activeSnapshot.refuelOffer.maxFuel - activeSnapshot.refuelOffer.fuel },
+                    (_, index) => index + 1,
+                  ).map((units) => (
+                    <button type="button" key={units} disabled={isBusy} onClick={() => void handleRefuel(units)}>
+                      +{units} {units === 1 ? 'nível' : 'níveis'} — R$ {units * activeSnapshot.refuelOffer!.unitPrice}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : activeSnapshot.phase === 'WAITING_FOR_EVENT' ? (
+              <p>Revele a carta de problema para concluir a jogada.</p>
             ) : (
-              <button
-                className="roll-button"
-                type="button"
+              <DiceRollButton
+                face={diceFace}
                 disabled={isBusy || !board}
                 onClick={() => void handleRoll()}
-              >
-                {isRolling ? 'Lançando…' : isMoving ? 'Movendo…' : 'Jogar dado'}
-              </button>
+                onAssetError={() =>
+                  setError('Não foi possível carregar uma face do dado.')
+                }
+              />
             )}
 
             {error && <p className="game-action-error" role="alert">{error}</p>}
           </div>
         </section>
+
+        {diceOverlayPhase !== 'hidden' && (
+          <div
+            className={`dice-roll-overlay dice-roll-overlay--${diceOverlayPhase}`}
+            role="status"
+            aria-live="polite"
+            aria-label={isRolling ? 'Lançando o dado' : `Resultado: ${diceFace}`}
+          >
+            <div className="dice-roll-overlay__stage">
+              <Dice
+                face={diceFace}
+                isRolling={isRolling}
+                variant="overlay"
+                onAssetError={() =>
+                  setError('Não foi possível carregar uma face do dado.')
+                }
+              />
+            </div>
+          </div>
+        )}
+
+        {activeSnapshot.pendingProblemCard && !isMoving && diceOverlayPhase === 'hidden' && (
+          <ProblemCardModal
+            key={`${activeSnapshot.pendingProblemCard.playerIndex}-${activeSnapshot.pendingProblemCard.id}`}
+            card={activeSnapshot.pendingProblemCard}
+            playerName={activeSnapshot.players[activeSnapshot.pendingProblemCard.playerIndex].name}
+            isConfirming={isResolvingAction}
+            onConfirm={() => void handleEventConfirmation()}
+          />
+        )}
       </div>
     </GameScreen>
   )

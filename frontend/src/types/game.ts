@@ -1,4 +1,5 @@
 export type BoardNodeType = 'CITY' | 'HIGHWAY' | 'DIRT_ROAD'
+export type BoardNodeTag = 'FUEL_STATION' | 'PROBLEM'
 
 export interface BoardNode {
   id: string
@@ -6,6 +7,7 @@ export interface BoardNode {
   y: number
   type: BoardNodeType
   name?: string
+  tags?: BoardNodeTag[]
 }
 
 export interface BoardRoute {
@@ -26,6 +28,17 @@ export interface GamePlayer {
   position: string
   activeRouteId: string | null
   routeDirection: number | null
+  turnOrder: number
+  balance: number
+  hasValidContract: boolean
+  color: string
+  spacesTraveled: number
+  fuel: number
+  fuelDistance: number
+  fuelVoucher: boolean
+  nextMovePenalty: number
+  isCurrentPlayer: boolean
+  turnsUntilTurn: number
 }
 
 export interface AvailableRoute {
@@ -36,7 +49,40 @@ export interface AvailableRoute {
 }
 
 export type GameStatus = 'PLAYING' | 'FINISHED'
-export type TurnPhase = 'WAITING_FOR_ROUTE' | 'WAITING_FOR_ROLL' | 'FINISHED'
+export type TurnPhase =
+  | 'WAITING_FOR_ROUTE'
+  | 'WAITING_FOR_ROLL'
+  | 'WAITING_FOR_REFUEL'
+  | 'WAITING_FOR_EVENT'
+  | 'FINISHED'
+
+export interface RefuelOffer {
+  playerIndex: number
+  reason: 'STATION' | 'OUT_OF_FUEL'
+  required: boolean
+  fuel: number
+  maxFuel: number
+  unitPrice: number
+}
+
+export type ProblemCardId =
+  | 'FLAT_TIRE'
+  | 'MECHANICAL_REPAIR'
+  | 'MANDATORY_DETOUR'
+  | 'INSURANCE_ASSISTANCE'
+  | 'FUEL_VOUCHER'
+
+export interface ProblemCard {
+  id: ProblemCardId
+  title: string
+  description: string
+  effect: {
+    balanceDelta?: number
+    nextMovePenalty?: number
+    fuelVoucher?: boolean
+  }
+  playerIndex: number
+}
 
 export interface GameSnapshot {
   gameId: string
@@ -48,14 +94,20 @@ export interface GameSnapshot {
   turnsPlayedInRound: number
   players: GamePlayer[]
   availableRoutes: AvailableRoute[]
+  refuelOffer: RefuelOffer | null
+  pendingProblemCard: ProblemCard | null
 }
 
 export interface MovementResult {
   playerIndex: number
   dice: number
+  movementSteps: number
+  appliedPenalty: number
   from: string
   path: string[]
   to: string
+  balanceDelta: number
+  ranOutOfFuel: boolean
 }
 
 export interface RollMoveResponse {

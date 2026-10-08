@@ -11,7 +11,7 @@
     {"id": "H_SUL_TRI_02", "x": 10.62343, "y": 67.51468, "type": "HIGHWAY"},
     {"id": "H_SUL_TRI_03", "x": 10.28795, "y": 66.92759, "type": "HIGHWAY"},
     {"id": "H_SUL_TRI_04", "x": 7.71596, "y": 59.29550, "type": "HIGHWAY"},
-    {"id": "H_SUL_TRI_05", "x": 7.04501, "y": 51.66341, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_05", "x": 7.04501, "y": 51.66341, "type": "HIGHWAY", "tags": ["FUEL_STATION"]},
     {"id": "H_SUL_TRI_06", "x": 7.04501, "y": 42.66145, "type": "HIGHWAY"},
     {"id": "H_SUL_TRI_07", "x": 8.61057, "y": 35.42074, "type": "HIGHWAY"},
     {"id": "H_SUL_TRI_08", "x": 10.73525, "y": 29.15851, "type": "HIGHWAY"},
@@ -43,16 +43,16 @@
 
     {"id": "D_BH_WEST_01", "x": 38.46799, "y": 49.70646, "type": "DIRT_ROAD"},
     {"id": "D_BH_WEST_02", "x": 34.10679, "y": 53.22896, "type": "DIRT_ROAD"},
-    {"id": "D_BH_WEST_03", "x": 30.08107, "y": 57.53425, "type": "DIRT_ROAD"},
+    {"id": "D_BH_WEST_03", "x": 30.08107, "y": 57.53425, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
     {"id": "D_BH_WEST_04", "x": 25.38440, "y": 60.66536, "type": "DIRT_ROAD"},
     {"id": "D_WEST_TRI_01", "x": 23.70702, "y": 53.03327, "type": "DIRT_ROAD"},
-    {"id": "D_WEST_TRI_02", "x": 21.91781, "y": 45.40117, "type": "DIRT_ROAD"},
+    {"id": "D_WEST_TRI_02", "x": 21.91781, "y": 45.40117, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
     {"id": "D_WEST_TRI_03", "x": 19.90495, "y": 37.57339, "type": "DIRT_ROAD"},
     {"id": "D_WEST_TRI_04", "x": 16.99748, "y": 31.31115, "type": "DIRT_ROAD"},
 
     {"id": "D_BH_ZONA_01", "x": 55.57730, "y": 65.16634, "type": "DIRT_ROAD"},
     {"id": "D_BH_ZONA_02", "x": 59.26754, "y": 69.47162, "type": "DIRT_ROAD"},
-    {"id": "D_BH_ZONA_03", "x": 62.95779, "y": 72.21135, "type": "DIRT_ROAD"},
+    {"id": "D_BH_ZONA_03", "x": 62.95779, "y": 72.21135, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
     {"id": "D_BH_ZONA_04", "x": 66.98351, "y": 74.55969, "type": "DIRT_ROAD"},
     {"id": "D_BH_ZONA_05", "x": 71.00923, "y": 75.73386, "type": "DIRT_ROAD"}
   ],
