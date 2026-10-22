@@ -18,6 +18,6 @@ class GameSession(models.Model):
         choices=Status.choices,
         default=Status.PLAYING,
     )
-    schema_version = models.PositiveSmallIntegerField(default=3)
+    schema_version = models.PositiveSmallIntegerField(default=4)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

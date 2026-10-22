@@ -7,7 +7,7 @@
 }
 
 .player-info-card {
-  width: clamp(210px, 18vw, 260px);
+  width: var(--player-card-width, clamp(210px, 18vw, 260px));
   aspect-ratio: 3 / 2;
   position: relative;
   color: #211604;
@@ -176,7 +176,6 @@
 
 @media (max-width: 720px) {
   .player-info-card {
-    width: min(36vw, 152px);
     font-size: clamp(0.42rem, 1.55vw, 0.56rem);
   }
 }

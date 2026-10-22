@@ -65,6 +65,23 @@ export async function selectGameRoute(
   }
 }
 
+export async function acceptGameContract(
+  gameId: string,
+  contractId: string,
+  expectedPlayerIndex: number,
+  expectedRound: number,
+): Promise<GameSnapshot> {
+  try {
+    const response = await axios.post<SnapshotResponse>(
+      `/api/inicial/games/${gameId}/contract/`,
+      { contractId, expectedPlayerIndex, expectedRound },
+    )
+    return response.data.snapshot
+  } catch (error) {
+    throw requestMessage(error, 'Não foi possível aceitar o contrato.')
+  }
+}
+
 export async function rollAndMove(
   gameId: string,
   expectedPlayerIndex: number,

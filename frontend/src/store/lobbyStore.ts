@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import {
+  acceptGameContract,
   acknowledgeProblemEvent,
   loadGame,
   refuelGame,
@@ -23,6 +24,7 @@ interface LobbyState {
   setSnapshot: (snapshot: GameSnapshot) => void
   refreshGame: () => Promise<void>
   selectRoute: (routeId: string) => Promise<void>
+  acceptContract: (contractId: string) => Promise<void>
   rollDice: () => Promise<RollMoveResponse>
   refuel: (units: number) => Promise<void>
   acknowledgeEvent: () => Promise<void>
@@ -66,6 +68,19 @@ export const useLobbyStore = create<LobbyState>()(
         const nextSnapshot = await selectGameRoute(
           snapshot.gameId,
           routeId,
+          snapshot.currentPlayerIndex,
+          snapshot.currentRound,
+        )
+        set({ snapshot: nextSnapshot })
+      },
+      acceptContract: async (contractId) => {
+        const snapshot = get().snapshot
+        if (!snapshot) {
+          throw new Error('Nenhuma partida foi preparada.')
+        }
+        const nextSnapshot = await acceptGameContract(
+          snapshot.gameId,
+          contractId,
           snapshot.currentPlayerIndex,
           snapshot.currentRound,
         )

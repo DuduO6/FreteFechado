@@ -8,6 +8,7 @@ from django.views.decorators.http import require_GET, require_POST
 from .board import load_board
 from .game_services import (
     GameActionError,
+    accept_contract,
     acknowledge_problem_card,
     create_game_session,
     refuel_player,
@@ -93,6 +94,28 @@ def select_game_route(request: HttpRequest, game_id: str) -> JsonResponse:
         game = select_route(
             game_id,
             str(payload.get('routeId', '')),
+            int(payload.get('expectedPlayerIndex', -1)),
+            int(payload.get('expectedRound', -1)),
+        )
+    except GameSession.DoesNotExist:
+        return JsonResponse({'ok': False, 'code': 'GAME_NOT_FOUND', 'message': 'Partida não encontrada.'}, status=404)
+    except (TypeError, ValueError) as error:
+        if isinstance(error, GameActionError):
+            return _action_error(error)
+        return JsonResponse({'ok': False, 'code': 'INVALID_INPUT', 'message': 'Dados da ação inválidos.'}, status=400)
+    return JsonResponse({'ok': True, 'snapshot': serialize_game(game)})
+
+
+@csrf_exempt
+@require_POST
+def accept_game_contract(request: HttpRequest, game_id: str) -> JsonResponse:
+    payload = _read_json_object(request)
+    if isinstance(payload, JsonResponse):
+        return payload
+    try:
+        game = accept_contract(
+            game_id,
+            str(payload.get('contractId', '')),
             int(payload.get('expectedPlayerIndex', -1)),
             int(payload.get('expectedRound', -1)),
         )

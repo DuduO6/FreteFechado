@@ -1,0 +1,83 @@
+[
+  {
+    "id": "BH_NORTE_ATALHO",
+    "title": "Grande BH → Norte de Minas (atalho)",
+    "originId": "CITY_BH",
+    "destinationId": "CITY_NORTE",
+    "cargo": "8 caixas de cenoura",
+    "reward": 300,
+    "imageKey": "bh_norte_atalho"
+  },
+  {
+    "id": "BH_NORTE_RODOVIA",
+    "title": "Grande BH → Norte de Minas (rodovia)",
+    "originId": "CITY_BH",
+    "destinationId": "CITY_NORTE",
+    "cargo": "7 caixas de alface",
+    "reward": 400,
+    "imageKey": "bh_norte_rodovia"
+  },
+  {
+    "id": "BH_ZONA_MATA_ALFACE",
+    "title": "Grande BH → Zona da Mata",
+    "originId": "CITY_BH",
+    "destinationId": "CITY_ZONA_MATA",
+    "cargo": "10 caixas de alface",
+    "reward": 400,
+    "imageKey": "bh_zona_da_mata"
+  },
+  {
+    "id": "BH_ZONA_MATA_TOMATE",
+    "title": "Grande BH → Zona da Mata",
+    "originId": "CITY_BH",
+    "destinationId": "CITY_ZONA_MATA",
+    "cargo": "12 caixas de tomate",
+    "reward": 400,
+    "imageKey": "bh_zona_da_mata_2"
+  },
+  {
+    "id": "SUL_BH",
+    "title": "Sul de Minas → Grande BH",
+    "originId": "CITY_SUL",
+    "destinationId": "CITY_BH",
+    "cargo": "15 caixas de cenoura",
+    "reward": 500,
+    "imageKey": "sul_bh"
+  },
+  {
+    "id": "SUL_ZONA_MATA",
+    "title": "Sul de Minas → Zona da Mata",
+    "originId": "CITY_SUL",
+    "destinationId": "CITY_ZONA_MATA",
+    "cargo": "10 caixas de milho",
+    "reward": 400,
+    "imageKey": "sul_zona_da_mata"
+  },
+  {
+    "id": "TRIANGULO_BH",
+    "title": "Triângulo Mineiro → Grande BH",
+    "originId": "CITY_TRIANGULO",
+    "destinationId": "CITY_BH",
+    "cargo": "8 caixas de brócolis",
+    "reward": 400,
+    "imageKey": "triangulo_bh"
+  },
+  {
+    "id": "TRIANGULO_SUL",
+    "title": "Triângulo Mineiro → Sul de Minas",
+    "originId": "CITY_TRIANGULO",
+    "destinationId": "CITY_SUL",
+    "cargo": "10 caixas de tomate",
+    "reward": 500,
+    "imageKey": "triangulo_sul"
+  },
+  {
+    "id": "ZONA_MATA_BH",
+    "title": "Zona da Mata → Grande BH",
+    "originId": "CITY_ZONA_MATA",
+    "destinationId": "CITY_BH",
+    "cargo": "20 caixas de repolho",
+    "reward": 500,
+    "imageKey": "zona_da_mata_bh"
+  }
+]

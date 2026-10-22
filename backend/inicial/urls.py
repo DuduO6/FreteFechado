@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    accept_game_contract,
     acknowledge_game_event,
     board_config,
     game_detail,
@@ -17,6 +18,7 @@ urlpatterns = [
     path('board/', board_config, name='board-config'),
     path('games/<uuid:game_id>/', game_detail, name='game-detail'),
     path('games/<uuid:game_id>/route/', select_game_route, name='select-game-route'),
+    path('games/<uuid:game_id>/contract/', accept_game_contract, name='accept-game-contract'),
     path('games/<uuid:game_id>/roll/', roll_game, name='roll-game'),
     path('games/<uuid:game_id>/refuel/', refuel_game, name='refuel-game'),
     path('games/<uuid:game_id>/event/acknowledge/', acknowledge_game_event, name='acknowledge-game-event'),

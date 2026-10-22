@@ -1,96 +1,125 @@
 {
-  "source": "project-5-at-2026-10-07-21-41-f83f26c8.json",
+  "source": "project-6-at-2026-10-22-11-45-c7358ab8.json",
   "nodes": [
-    {"id": "CITY_BH", "x": 50.88063, "y": 52.05479, "type": "CITY", "name": "Grande BH"},
-    {"id": "CITY_TRIANGULO", "x": 14.09002, "y": 19.76517, "type": "CITY", "name": "Triângulo Mineiro"},
-    {"id": "CITY_NORTE", "x": 50.65698, "y": 19.17808, "type": "CITY", "name": "Norte de Minas"},
-    {"id": "CITY_SUL", "x": 23.03606, "y": 76.90802, "type": "CITY", "name": "Sul de Minas"},
-    {"id": "CITY_ZONA_MATA", "x": 82.41543, "y": 76.71233, "type": "CITY", "name": "Zona da Mata"},
+    {"id": "CITY_BH", "x": 51.17318, "y": 50.42633, "type": "CITY", "name": "Grande BH"},
+    {"id": "CITY_TRIANGULO", "x": 21.07431, "y": 79.39435, "type": "CITY", "name": "Triângulo Mineiro"},
+    {"id": "CITY_NORTE", "x": 11.95531, "y": 17.27201, "type": "CITY", "name": "Norte de Minas"},
+    {"id": "CITY_ZONA_MATA", "x": 50.61453, "y": 15.68378, "type": "CITY", "name": "Zona da Mata"},
+    {"id": "CITY_SUL", "x": 85.41348, "y": 76.32712, "type": "CITY", "name": "Sul de Minas"},
 
-    {"id": "H_SUL_TRI_01", "x": 14.09002, "y": 72.99413, "type": "HIGHWAY"},
-    {"id": "H_SUL_TRI_02", "x": 10.62343, "y": 67.51468, "type": "HIGHWAY"},
-    {"id": "H_SUL_TRI_03", "x": 10.28795, "y": 66.92759, "type": "HIGHWAY"},
-    {"id": "H_SUL_TRI_04", "x": 7.71596, "y": 59.29550, "type": "HIGHWAY"},
-    {"id": "H_SUL_TRI_05", "x": 7.04501, "y": 51.66341, "type": "HIGHWAY", "tags": ["FUEL_STATION"]},
-    {"id": "H_SUL_TRI_06", "x": 7.04501, "y": 42.66145, "type": "HIGHWAY"},
-    {"id": "H_SUL_TRI_07", "x": 8.61057, "y": 35.42074, "type": "HIGHWAY"},
-    {"id": "H_SUL_TRI_08", "x": 10.73525, "y": 29.15851, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_01", "x": 71.85752, "y": 86.29516, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_02", "x": 66.56147, "y": 87.75897, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_03", "x": 61.35369, "y": 88.59543, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_04", "x": 56.02822, "y": 88.85683, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_05", "x": 50.79102, "y": 88.90910, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_06", "x": 45.67151, "y": 88.85683, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_07", "x": 40.52257, "y": 88.64771, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_08", "x": 35.46190, "y": 87.75897, "type": "HIGHWAY"},
+    {"id": "H_SUL_TRI_09", "x": 30.84257, "y": 85.92921, "type": "HIGHWAY"},
 
-    {"id": "H_TRI_NORTE_01", "x": 20.91138, "y": 16.24266, "type": "HIGHWAY"},
-    {"id": "H_TRI_NORTE_02", "x": 24.37797, "y": 14.28571, "type": "HIGHWAY"},
-    {"id": "H_TRI_NORTE_03", "x": 28.40369, "y": 12.91585, "type": "HIGHWAY"},
-    {"id": "H_TRI_NORTE_04", "x": 32.65306, "y": 13.69863, "type": "HIGHWAY"},
-    {"id": "H_TRI_NORTE_05", "x": 36.90243, "y": 13.89432, "type": "HIGHWAY"},
+    {"id": "H_TRI_NORTE_01", "x": 11.65130, "y": 74.89837, "type": "HIGHWAY"},
+    {"id": "H_TRI_NORTE_02", "x": 8.06176, "y": 68.36352, "type": "HIGHWAY", "tags": ["FUEL_STATION"]},
+    {"id": "H_TRI_NORTE_03", "x": 5.41374, "y": 59.99890, "type": "HIGHWAY"},
+    {"id": "H_TRI_NORTE_04", "x": 4.26626, "y": 51.26833, "type": "HIGHWAY"},
+    {"id": "H_TRI_NORTE_05", "x": 4.50164, "y": 41.59675, "type": "HIGHWAY"},
+    {"id": "H_TRI_NORTE_06", "x": 5.97276, "y": 33.80720, "type": "HIGHWAY"},
+    {"id": "H_TRI_NORTE_07", "x": 8.35599, "y": 26.43588, "type": "HIGHWAY"},
 
-    {"id": "H_NORTE_ZONA_01", "x": 63.74056, "y": 12.72016, "type": "HIGHWAY"},
-    {"id": "H_NORTE_ZONA_02", "x": 67.98994, "y": 12.32877, "type": "HIGHWAY"},
-    {"id": "H_NORTE_ZONA_03", "x": 72.57478, "y": 11.74168, "type": "HIGHWAY"},
-    {"id": "H_NORTE_ZONA_04", "x": 77.38328, "y": 13.69863, "type": "HIGHWAY"},
-    {"id": "H_NORTE_ZONA_05", "x": 81.74448, "y": 16.43836, "type": "HIGHWAY"},
-    {"id": "H_NORTE_ZONA_06", "x": 91.47330, "y": 33.85519, "type": "HIGHWAY"},
-    {"id": "H_NORTE_ZONA_07", "x": 92.92703, "y": 40.90020, "type": "HIGHWAY"},
-    {"id": "H_NORTE_ZONA_08", "x": 93.15068, "y": 48.14090, "type": "HIGHWAY"},
-    {"id": "H_NORTE_ZONA_09", "x": 92.14425, "y": 56.55577, "type": "HIGHWAY"},
+    {"id": "H_NORTE_ZONA_01", "x": 18.80097, "y": 13.47072, "type": "HIGHWAY"},
+    {"id": "H_NORTE_ZONA_02", "x": 22.68474, "y": 11.27501, "type": "HIGHWAY"},
+    {"id": "H_NORTE_ZONA_03", "x": 26.86273, "y": 9.75893, "type": "HIGHWAY"},
+    {"id": "H_NORTE_ZONA_04", "x": 31.21726, "y": 9.96804, "type": "HIGHWAY"},
+    {"id": "H_NORTE_ZONA_05", "x": 35.71890, "y": 10.49083, "type": "HIGHWAY"},
+    {"id": "H_NORTE_ZONA_06", "x": 40.48534, "y": 11.95464, "type": "HIGHWAY"},
 
-    {"id": "H_ZONA_SUL_01", "x": 65.75342, "y": 84.93151, "type": "HIGHWAY"},
-    {"id": "H_ZONA_SUL_02", "x": 60.38580, "y": 85.71429, "type": "HIGHWAY"},
-    {"id": "H_ZONA_SUL_03", "x": 56.24825, "y": 85.32290, "type": "HIGHWAY"},
-    {"id": "H_ZONA_SUL_04", "x": 51.10428, "y": 86.10568, "type": "HIGHWAY"},
-    {"id": "H_ZONA_SUL_05", "x": 45.96030, "y": 86.10568, "type": "HIGHWAY"},
-    {"id": "H_ZONA_SUL_06", "x": 41.71093, "y": 85.32290, "type": "HIGHWAY"},
-    {"id": "H_ZONA_SUL_07", "x": 36.11965, "y": 84.93151, "type": "HIGHWAY"},
-    {"id": "H_ZONA_SUL_08", "x": 32.09393, "y": 82.38748, "type": "HIGHWAY"},
+    {"id": "H_NORTE_BH_01", "x": 20.47805, "y": 20.73748, "type": "HIGHWAY"},
+    {"id": "H_NORTE_BH_02", "x": 25.21507, "y": 23.09003, "type": "HIGHWAY"},
+    {"id": "H_NORTE_BH_03", "x": 30.36401, "y": 26.22676, "type": "HIGHWAY"},
+    {"id": "H_NORTE_BH_04", "x": 34.74796, "y": 30.09540, "type": "HIGHWAY"},
+    {"id": "H_NORTE_BH_05", "x": 39.01422, "y": 34.48682, "type": "HIGHWAY"},
+    {"id": "H_NORTE_BH_06", "x": 42.36838, "y": 38.61685, "type": "HIGHWAY"},
 
-    {"id": "D_BH_WEST_01", "x": 38.46799, "y": 49.70646, "type": "DIRT_ROAD"},
-    {"id": "D_BH_WEST_02", "x": 34.10679, "y": 53.22896, "type": "DIRT_ROAD"},
-    {"id": "D_BH_WEST_03", "x": 30.08107, "y": 57.53425, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
-    {"id": "D_BH_WEST_04", "x": 25.38440, "y": 60.66536, "type": "DIRT_ROAD"},
-    {"id": "D_WEST_TRI_01", "x": 23.70702, "y": 53.03327, "type": "DIRT_ROAD"},
-    {"id": "D_WEST_TRI_02", "x": 21.91781, "y": 45.40117, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
-    {"id": "D_WEST_TRI_03", "x": 19.90495, "y": 37.57339, "type": "DIRT_ROAD"},
-    {"id": "D_WEST_TRI_04", "x": 16.99748, "y": 31.31115, "type": "DIRT_ROAD"},
+    {"id": "H_ZONA_SUL_01", "x": 59.39697, "y": 11.81502, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_02", "x": 63.69265, "y": 9.93298, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_03", "x": 68.19429, "y": 8.73057, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_04", "x": 73.40207, "y": 8.62601, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_05", "x": 77.93314, "y": 10.40349, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_06", "x": 82.34651, "y": 13.33111, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_07", "x": 86.67161, "y": 17.61797, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_08", "x": 90.49654, "y": 23.83916, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_09", "x": 93.58590, "y": 32.15149, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_10", "x": 95.11587, "y": 40.09788, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_11", "x": 95.61605, "y": 48.46249, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_12", "x": 95.02760, "y": 56.93167, "type": "HIGHWAY"},
+    {"id": "H_ZONA_SUL_13", "x": 93.11514, "y": 64.51210, "type": "HIGHWAY"},
 
-    {"id": "D_BH_ZONA_01", "x": 55.57730, "y": 65.16634, "type": "DIRT_ROAD"},
-    {"id": "D_BH_ZONA_02", "x": 59.26754, "y": 69.47162, "type": "DIRT_ROAD"},
-    {"id": "D_BH_ZONA_03", "x": 62.95779, "y": 72.21135, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
-    {"id": "D_BH_ZONA_04", "x": 66.98351, "y": 74.55969, "type": "DIRT_ROAD"},
-    {"id": "D_BH_ZONA_05", "x": 71.00923, "y": 75.73386, "type": "DIRT_ROAD"}
+    {"id": "D_BH_WEST_01", "x": 38.03624, "y": 49.29896, "type": "DIRT_ROAD"},
+    {"id": "D_BH_WEST_02", "x": 33.38749, "y": 52.48796, "type": "DIRT_ROAD"},
+    {"id": "D_BH_WEST_03", "x": 28.97412, "y": 57.76813, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
+    {"id": "D_BH_WEST_04", "x": 23.64865, "y": 61.00942, "type": "DIRT_ROAD"},
+    {"id": "D_WEST_NORTE_01", "x": 22.20695, "y": 53.06303, "type": "DIRT_ROAD"},
+    {"id": "D_WEST_NORTE_02", "x": 20.41921, "y": 44.48930, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
+    {"id": "D_WEST_NORTE_03", "x": 18.41848, "y": 36.02013, "type": "DIRT_ROAD"},
+    {"id": "D_WEST_NORTE_04", "x": 15.12316, "y": 29.48527, "type": "DIRT_ROAD"},
+
+    {"id": "D_BH_SUL_01", "x": 55.65560, "y": 65.93192, "type": "DIRT_ROAD"},
+    {"id": "D_BH_SUL_02", "x": 59.57173, "y": 70.45483, "type": "DIRT_ROAD"},
+    {"id": "D_BH_SUL_03", "x": 63.56619, "y": 73.58607, "type": "DIRT_ROAD", "tags": ["PROBLEM"]},
+    {"id": "D_BH_SUL_04", "x": 67.83477, "y": 76.36940, "type": "DIRT_ROAD"},
+    {"id": "D_BH_SUL_05", "x": 72.02504, "y": 77.96981, "type": "DIRT_ROAD"}
+  ],
+  "landmarks": [
+    {"id": "LANDMARK_GAS_STATION", "type": "GAS_STATION", "x": 11.62011, "y": 63.13217, "nodeId": "H_TRI_NORTE_02"},
+    {"id": "LANDMARK_POLICE_STATION", "type": "POLICE_STATION", "x": 75.19553, "y": 18.46318, "nodeId": "H_ZONA_SUL_05"}
   ],
   "routes": [
     {
       "id": "ROUTE_SUL_TRIANGULO",
-      "name": "Sul de Minas ↔ Triângulo Mineiro",
-      "nodes": ["CITY_SUL", "H_SUL_TRI_01", "H_SUL_TRI_02", "H_SUL_TRI_03", "H_SUL_TRI_04", "H_SUL_TRI_05", "H_SUL_TRI_06", "H_SUL_TRI_07", "H_SUL_TRI_08", "CITY_TRIANGULO"]
+      "name": "Rodovia Sul de Minas ↔ Triângulo Mineiro",
+      "allowedDirections": [1, -1],
+      "nodes": ["CITY_SUL", "H_SUL_TRI_01", "H_SUL_TRI_02", "H_SUL_TRI_03", "H_SUL_TRI_04", "H_SUL_TRI_05", "H_SUL_TRI_06", "H_SUL_TRI_07", "H_SUL_TRI_08", "H_SUL_TRI_09", "CITY_TRIANGULO"]
     },
     {
       "id": "ROUTE_TRIANGULO_NORTE",
-      "name": "Triângulo Mineiro ↔ Norte de Minas",
-      "nodes": ["CITY_TRIANGULO", "H_TRI_NORTE_01", "H_TRI_NORTE_02", "H_TRI_NORTE_03", "H_TRI_NORTE_04", "H_TRI_NORTE_05", "CITY_NORTE"]
+      "name": "Rodovia Triângulo Mineiro → Norte de Minas",
+      "allowedDirections": [1],
+      "nodes": ["CITY_TRIANGULO", "H_TRI_NORTE_01", "H_TRI_NORTE_02", "H_TRI_NORTE_03", "H_TRI_NORTE_04", "H_TRI_NORTE_05", "H_TRI_NORTE_06", "H_TRI_NORTE_07", "CITY_NORTE"]
     },
     {
       "id": "ROUTE_NORTE_ZONA",
-      "name": "Norte de Minas ↔ Zona da Mata",
-      "nodes": ["CITY_NORTE", "H_NORTE_ZONA_01", "H_NORTE_ZONA_02", "H_NORTE_ZONA_03", "H_NORTE_ZONA_04", "H_NORTE_ZONA_05", "H_NORTE_ZONA_06", "H_NORTE_ZONA_07", "H_NORTE_ZONA_08", "H_NORTE_ZONA_09", "CITY_ZONA_MATA"]
+      "name": "Rodovia Norte de Minas → Zona da Mata",
+      "allowedDirections": [1],
+      "nodes": ["CITY_NORTE", "H_NORTE_ZONA_01", "H_NORTE_ZONA_02", "H_NORTE_ZONA_03", "H_NORTE_ZONA_04", "H_NORTE_ZONA_05", "H_NORTE_ZONA_06", "CITY_ZONA_MATA"]
     },
     {
       "id": "ROUTE_ZONA_SUL",
-      "name": "Zona da Mata ↔ Sul de Minas",
-      "nodes": ["CITY_ZONA_MATA", "H_ZONA_SUL_01", "H_ZONA_SUL_02", "H_ZONA_SUL_03", "H_ZONA_SUL_04", "H_ZONA_SUL_05", "H_ZONA_SUL_06", "H_ZONA_SUL_07", "H_ZONA_SUL_08", "CITY_SUL"]
-    },
-    {
-      "id": "ROUTE_BH_SUL",
-      "name": "Grande BH ↔ Sul de Minas",
-      "nodes": ["CITY_BH", "D_BH_WEST_01", "D_BH_WEST_02", "D_BH_WEST_03", "D_BH_WEST_04", "CITY_SUL"]
+      "name": "Rodovia Zona da Mata ↔ Sul de Minas",
+      "allowedDirections": [1, -1],
+      "nodes": ["CITY_ZONA_MATA", "H_ZONA_SUL_01", "H_ZONA_SUL_02", "H_ZONA_SUL_03", "H_ZONA_SUL_04", "H_ZONA_SUL_05", "H_ZONA_SUL_06", "H_ZONA_SUL_07", "H_ZONA_SUL_08", "H_ZONA_SUL_09", "H_ZONA_SUL_10", "H_ZONA_SUL_11", "H_ZONA_SUL_12", "H_ZONA_SUL_13", "CITY_SUL"]
     },
     {
       "id": "ROUTE_BH_TRIANGULO",
-      "name": "Grande BH ↔ Triângulo Mineiro",
-      "nodes": ["CITY_BH", "D_BH_WEST_01", "D_BH_WEST_02", "D_BH_WEST_03", "D_BH_WEST_04", "D_WEST_TRI_01", "D_WEST_TRI_02", "D_WEST_TRI_03", "D_WEST_TRI_04", "CITY_TRIANGULO"]
+      "name": "Estrada de terra Grande BH ↔ Triângulo Mineiro",
+      "allowedDirections": [1, -1],
+      "nodes": ["CITY_BH", "D_BH_WEST_01", "D_BH_WEST_02", "D_BH_WEST_03", "D_BH_WEST_04", "CITY_TRIANGULO"]
     },
     {
-      "id": "ROUTE_BH_ZONA",
-      "name": "Grande BH ↔ Zona da Mata",
-      "nodes": ["CITY_BH", "D_BH_ZONA_01", "D_BH_ZONA_02", "D_BH_ZONA_03", "D_BH_ZONA_04", "D_BH_ZONA_05", "CITY_ZONA_MATA"]
+      "id": "ROUTE_BH_NORTE_DIRT",
+      "name": "Atalho de terra Grande BH → Norte de Minas",
+      "allowedDirections": [1],
+      "nodes": ["CITY_BH", "D_BH_WEST_01", "D_BH_WEST_02", "D_BH_WEST_03", "D_BH_WEST_04", "D_WEST_NORTE_01", "D_WEST_NORTE_02", "D_WEST_NORTE_03", "D_WEST_NORTE_04", "CITY_NORTE"]
+    },
+    {
+      "id": "ROUTE_BH_NORTE_HIGHWAY",
+      "name": "Rodovia Grande BH → Norte de Minas",
+      "allowedDirections": [1],
+      "nodes": ["CITY_BH", "H_NORTE_BH_06", "H_NORTE_BH_05", "H_NORTE_BH_04", "H_NORTE_BH_03", "H_NORTE_BH_02", "H_NORTE_BH_01", "CITY_NORTE"]
+    },
+    {
+      "id": "ROUTE_BH_SUL",
+      "name": "Estrada de terra Grande BH ↔ Sul de Minas",
+      "allowedDirections": [1, -1],
+      "nodes": ["CITY_BH", "D_BH_SUL_01", "D_BH_SUL_02", "D_BH_SUL_03", "D_BH_SUL_04", "D_BH_SUL_05", "CITY_SUL"]
     }
   ]
 }

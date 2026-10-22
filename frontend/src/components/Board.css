@@ -40,18 +40,41 @@
   filter: drop-shadow(0 2px 2px rgba(35, 19, 3, 0.55));
 }
 
-.board-special-space__station {
-  width: 145%;
-  height: 145%;
-  right: 72%;
-  bottom: 5%;
-}
-
 .board-special-space__fuel,
 .board-special-space__problem {
   width: 100%;
   height: 100%;
   inset: 0;
+}
+
+.board-landmark {
+  width: clamp(40px, 4.5vw, 72px);
+  aspect-ratio: 1;
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.board-landmark img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(35, 19, 3, 0.58));
+}
+
+.board-landmark--police-station {
+  width: clamp(18px, 2vw, 30px);
+  display: grid;
+  place-items: center;
+  border: 2px solid #f4d35e;
+  border-radius: 50%;
+  color: #fff;
+  background: #174d8c;
+  box-shadow: 0 2px 3px rgba(35, 19, 3, 0.58);
+  font-size: clamp(0.6rem, 1vw, 0.9rem);
+  font-weight: 1000;
 }
 
 .player-marker {

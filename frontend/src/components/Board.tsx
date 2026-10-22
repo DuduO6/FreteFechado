@@ -51,6 +51,21 @@ function Board({ board, players, positions, currentPlayerIndex }: BoardProps) {
         onError={() => setImageFailed(true)}
       />
 
+      {board.landmarks.map((landmark) => (
+        <div
+          className={`board-landmark board-landmark--${landmark.type.toLowerCase().replace('_', '-')}`}
+          key={landmark.id}
+          style={{ left: `${landmark.x}%`, top: `${landmark.y}%` }}
+          aria-label={landmark.type === 'GAS_STATION' ? 'Posto de combustível' : 'Posto de fiscalização'}
+        >
+          {landmark.type === 'GAS_STATION' ? (
+            <img src={stationImage} alt="" />
+          ) : (
+            <span aria-hidden="true">P</span>
+          )}
+        </div>
+      ))}
+
       {board.nodes.map((node) => {
         const isStation = node.tags?.includes('FUEL_STATION')
         const isProblem = node.tags?.includes('PROBLEM')
@@ -65,10 +80,7 @@ function Board({ board, players, positions, currentPlayerIndex }: BoardProps) {
             aria-label={isStation ? 'Posto de combustível' : 'Casa de problema'}
           >
             {isStation && (
-              <>
-                <img className="board-special-space__station" src={stationImage} alt="" />
-                <img className="board-special-space__fuel" src={fuelTickImage} alt="" />
-              </>
+              <img className="board-special-space__fuel" src={fuelTickImage} alt="" />
             )}
             {isProblem && (
               <img className="board-special-space__problem" src={problemImage} alt="" />

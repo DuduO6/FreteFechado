@@ -1,9 +1,16 @@
+from heapq import heappop, heappush
 from random import SystemRandom
 from typing import Protocol
 
 from django.db import transaction
 
-from .board import get_node, get_route, get_routes_from_city
+from .board import (
+    get_node,
+    get_route,
+    get_route_direction_from_city,
+    get_routes_from_city,
+)
+from .contracts import get_contract, get_contracts_from_city
 from .models import GameSession
 
 
@@ -13,16 +20,15 @@ D6_SIDES = 6
 INITIAL_BALANCE = 1000
 MOVEMENT_COST = 10
 MOVEMENT_COST_INTERVAL = 2
-BH_ARRIVAL_REWARD = 100
-CURRENT_SCHEMA_VERSION = 3
+CURRENT_SCHEMA_VERSION = 4
 PLAYER_COLORS = ('#e63f2e', '#237edb', '#f3b51b', '#7b45bf')
 
 MAX_FUEL = 5
 FUEL_CONSUMPTION_INTERVAL = 3
 FUEL_UNIT_PRICE = 50
 OUT_OF_FUEL_PENALTY = 300
-FUEL_STATION_NODE_ID = 'H_SUL_TRI_05'
-FUEL_STATION_ROUTE_ID = 'ROUTE_SUL_TRIANGULO'
+FUEL_STATION_NODE_ID = 'H_TRI_NORTE_02'
+FUEL_STATION_ROUTE_ID = 'ROUTE_TRIANGULO_NORTE'
 
 PROBLEM_CARDS = (
     {
@@ -42,12 +48,6 @@ PROBLEM_CARDS = (
         'title': 'Desvio obrigatório',
         'description': 'Na próxima jogada, o dado perde 2 pontos (mínimo 1).',
         'effect': {'nextMovePenalty': 2},
-    },
-    {
-        'id': 'INSURANCE_ASSISTANCE',
-        'title': 'Assistência da seguradora',
-        'description': 'Receba R$ 100 da seguradora.',
-        'effect': {'balanceDelta': 100},
     },
     {
         'id': 'FUEL_VOUCHER',
@@ -92,7 +92,9 @@ def _normalize_player(player: dict[str, object], index: int) -> dict[str, object
     normalized_player = dict(player)
     normalized_player.setdefault('turnOrder', index + 1)
     normalized_player.setdefault('balance', INITIAL_BALANCE)
-    normalized_player.setdefault('hasValidContract', False)
+    normalized_player.setdefault('activeContractId', None)
+    normalized_player['hasValidContract'] = bool(normalized_player['activeContractId'])
+    normalized_player.setdefault('deliveries', 0)
     normalized_player.setdefault('color', PLAYER_COLORS[index])
     normalized_player.setdefault('spacesTraveled', 0)
     normalized_player.setdefault('fuel', MAX_FUEL)
@@ -109,6 +111,12 @@ def _players_for_snapshot(game: GameSession) -> list[dict[str, object]]:
     players: list[dict[str, object]] = []
     for index, player in enumerate(game.players):
         snapshot_player = _normalize_player(player, index)
+        active_contract_id = snapshot_player['activeContractId']
+        snapshot_player['activeContract'] = (
+            dict(get_contract(str(active_contract_id)))
+            if active_contract_id
+            else None
+        )
         snapshot_player['isCurrentPlayer'] = index == game.current_player_index
         snapshot_player['turnsUntilTurn'] = (
             index - game.current_player_index
@@ -131,6 +139,8 @@ def create_game_session(
             'turnOrder': index + 1,
             'balance': INITIAL_BALANCE,
             'hasValidContract': False,
+            'activeContractId': None,
+            'deliveries': 0,
             'color': PLAYER_COLORS[index],
             'spacesTraveled': 0,
             'fuel': MAX_FUEL,
@@ -149,6 +159,74 @@ def create_game_session(
     )
 
 
+def _route_destination(route: dict[str, object], city_id: str) -> str:
+    nodes = route['nodes']
+    return str(nodes[-1] if nodes[0] == city_id else nodes[0])
+
+
+def _shortest_city_distance(origin_id: str, destination_id: str) -> int | None:
+    if origin_id == destination_id:
+        return 0
+
+    distances = {origin_id: 0}
+    pending: list[tuple[int, str]] = [(0, origin_id)]
+    while pending:
+        distance, city_id = heappop(pending)
+        if distance != distances[city_id]:
+            continue
+        if city_id == destination_id:
+            return distance
+        for route in get_routes_from_city(city_id):
+            next_city_id = _route_destination(route, city_id)
+            next_distance = distance + len(route['nodes']) - 1
+            if next_distance < distances.get(next_city_id, next_distance + 1):
+                distances[next_city_id] = next_distance
+                heappush(pending, (next_distance, next_city_id))
+    return None
+
+
+def _routes_toward_contract(
+    city_id: str,
+    contract: dict[str, object],
+) -> list[dict[str, object]]:
+    destination_id = str(contract['destinationId'])
+    scored_routes: list[tuple[int, str, dict[str, object]]] = []
+    for route in get_routes_from_city(city_id):
+        next_city_id = _route_destination(route, city_id)
+        remaining_distance = _shortest_city_distance(next_city_id, destination_id)
+        if remaining_distance is None:
+            continue
+        total_distance = len(route['nodes']) - 1 + remaining_distance
+        scored_routes.append((total_distance, next_city_id, route))
+
+    if not scored_routes:
+        return []
+    _, best_next_city_id, _ = min(scored_routes, key=lambda option: option[0])
+    return [
+        route
+        for _, next_city_id, route in scored_routes
+        if next_city_id == best_next_city_id
+    ]
+
+
+def _assign_contract_route_if_unambiguous(player: dict[str, object]) -> None:
+    active_contract_id = player['activeContractId']
+    if not active_contract_id or player['activeRouteId']:
+        return
+    route_options = _routes_toward_contract(
+        str(player['position']),
+        get_contract(str(active_contract_id)),
+    )
+    if len(route_options) != 1:
+        return
+    route = route_options[0]
+    player['activeRouteId'] = route['id']
+    player['routeDirection'] = get_route_direction_from_city(
+        route,
+        str(player['position']),
+    )
+
+
 def serialize_game(game: GameSession) -> dict[str, object]:
     players = _players_for_snapshot(game)
     current_player = players[game.current_player_index]
@@ -156,6 +234,7 @@ def serialize_game(game: GameSession) -> dict[str, object]:
     phase = 'FINISHED'
     refuel_offer = None
     pending_problem_card = None
+    available_contracts: list[dict[str, object]] = []
 
     if game.status == GameSession.Status.PLAYING:
         if current_player['pendingProblemCard']:
@@ -177,11 +256,19 @@ def serialize_game(game: GameSession) -> dict[str, object]:
             phase = 'WAITING_FOR_ROLL'
         else:
             phase = 'WAITING_FOR_ROUTE'
-            for route in get_routes_from_city(current_player['position']):
-                destination_id = (
-                    route['nodes'][-1]
-                    if route['nodes'][0] == current_player['position']
-                    else route['nodes'][0]
+            active_contract_id = current_player['activeContractId']
+            routes = (
+                _routes_toward_contract(
+                    str(current_player['position']),
+                    get_contract(str(active_contract_id)),
+                )
+                if active_contract_id
+                else get_routes_from_city(str(current_player['position']))
+            )
+            for route in routes:
+                destination_id = _route_destination(
+                    route,
+                    str(current_player['position']),
                 )
                 available_routes.append(
                     {
@@ -191,6 +278,11 @@ def serialize_game(game: GameSession) -> dict[str, object]:
                         'destinationName': get_node(destination_id)['name'],
                     }
                 )
+            if not current_player['activeContractId']:
+                available_contracts = [
+                    dict(contract)
+                    for contract in get_contracts_from_city(str(current_player['position']))
+                ]
 
     return {
         'gameId': str(game.id),
@@ -202,6 +294,7 @@ def serialize_game(game: GameSession) -> dict[str, object]:
         'turnsPlayedInRound': game.turns_played_in_round,
         'players': players,
         'availableRoutes': available_routes,
+        'availableContracts': available_contracts,
         'refuelOffer': refuel_offer,
         'pendingProblemCard': pending_problem_card,
     }
@@ -248,16 +341,67 @@ def select_route(
     except RuntimeError as error:
         raise GameActionError('INVALID_ROUTE', 'A rota informada não existe.') from error
 
-    position = player['position']
-    if position == route['nodes'][0]:
-        direction = 1
-    elif position == route['nodes'][-1]:
-        direction = -1
-    else:
+    direction = get_route_direction_from_city(route, str(player['position']))
+    if direction is None:
         raise GameActionError('INVALID_ROUTE', 'A rota não está conectada à posição atual.')
+    if direction not in route['allowedDirections']:
+        raise GameActionError(
+            'INVALID_ROUTE_DIRECTION',
+            'Esta rota não permite saída no sentido escolhido.',
+        )
+    active_contract_id = player['activeContractId']
+    if active_contract_id:
+        contract_routes = _routes_toward_contract(
+            str(player['position']),
+            get_contract(str(active_contract_id)),
+        )
+        if route_id not in {contract_route['id'] for contract_route in contract_routes}:
+            raise GameActionError(
+                'ROUTE_OUTSIDE_CONTRACT',
+                'O contrato atual já define o destino desta viagem.',
+            )
 
     player['activeRouteId'] = route_id
     player['routeDirection'] = direction
+    game.players = players
+    game.save(update_fields=['players', 'updated_at'])
+    return game
+
+
+@transaction.atomic
+def accept_contract(
+    game_id: str,
+    contract_id: str,
+    expected_player_index: int,
+    expected_round: int,
+) -> GameSession:
+    game = GameSession.objects.select_for_update().get(id=game_id)
+    _validate_turn(game, expected_player_index, expected_round)
+
+    players = [_normalize_player(player, index) for index, player in enumerate(game.players)]
+    player = players[game.current_player_index]
+    _ensure_no_pending_action(player)
+    if player['activeRouteId']:
+        raise GameActionError(
+            'CONTRACT_REQUIRES_CITY',
+            'Só é possível aceitar um contrato antes de iniciar uma rota.',
+        )
+    if player['activeContractId']:
+        raise GameActionError('CONTRACT_ALREADY_ACTIVE', 'O jogador já possui um contrato ativo.')
+
+    try:
+        contract = get_contract(contract_id)
+    except RuntimeError as error:
+        raise GameActionError('INVALID_CONTRACT', 'O contrato informado não existe.') from error
+    if contract['originId'] != player['position']:
+        raise GameActionError(
+            'INVALID_CONTRACT_ORIGIN',
+            'Este contrato não está disponível na cidade atual.',
+        )
+
+    player['activeContractId'] = contract_id
+    player['hasValidContract'] = True
+    _assign_contract_route_if_unambiguous(player)
     game.players = players
     game.save(update_fields=['players', 'updated_at'])
     return game
@@ -376,12 +520,18 @@ def roll_and_move(
         if reached_station:
             player['pendingRefuel'] = {'reason': 'STATION', 'required': False}
 
-    arrival_reward = (
-        BH_ARRIVAL_REWARD
-        if player['position'] == INITIAL_NODE_ID and start_position != INITIAL_NODE_ID
-        else 0
-    )
-    balance_delta += arrival_reward
+    completed_contract = None
+    active_contract_id = player['activeContractId']
+    if active_contract_id and get_node(player['position'])['type'] == 'CITY':
+        contract = get_contract(str(active_contract_id))
+        if contract['destinationId'] == player['position']:
+            completed_contract = dict(contract)
+            balance_delta += int(contract['reward'])
+            player['activeContractId'] = None
+            player['hasValidContract'] = False
+            player['deliveries'] = int(player['deliveries']) + 1
+        else:
+            _assign_contract_route_if_unambiguous(player)
     player['balance'] = int(player['balance']) + balance_delta
 
     problem_card = None
@@ -402,6 +552,7 @@ def roll_and_move(
         'to': player['position'],
         'balanceDelta': balance_delta + card_balance_delta,
         'ranOutOfFuel': ran_out_of_fuel,
+        'completedContract': completed_contract,
     }
     if not player['pendingRefuel'] and not player['pendingProblemCard']:
         _advance_turn(game)

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Board from '../components/Board'
+import ContractCardModal from '../components/ContractCardModal'
 import Dice from '../components/Dice'
 import DiceRollButton from '../components/DiceRollButton'
 import GameScreen from '../components/GameScreen'
@@ -30,6 +31,7 @@ function GamePage() {
   const snapshot = useLobbyStore((state) => state.snapshot)
   const refreshGame = useLobbyStore((state) => state.refreshGame)
   const selectRoute = useLobbyStore((state) => state.selectRoute)
+  const acceptContract = useLobbyStore((state) => state.acceptContract)
   const rollDice = useLobbyStore((state) => state.rollDice)
   const restartGame = useLobbyStore((state) => state.restartGame)
   const refuel = useLobbyStore((state) => state.refuel)
@@ -44,6 +46,7 @@ function GamePage() {
   const [isMoving, setIsMoving] = useState(false)
   const [isSelectingRoute, setIsSelectingRoute] = useState(false)
   const [isResolvingAction, setIsResolvingAction] = useState(false)
+  const [isContractModalOpen, setIsContractModalOpen] = useState(false)
   const [error, setError] = useState('')
 
   const isBusy =
@@ -132,6 +135,22 @@ function GamePage() {
       setError(errorMessage(routeError))
     } finally {
       setIsSelectingRoute(false)
+    }
+  }
+
+  async function handleContractAcceptance(contractId: string) {
+    if (isBusy) {
+      return
+    }
+    setError('')
+    setIsResolvingAction(true)
+    try {
+      await acceptContract(contractId)
+      setIsContractModalOpen(false)
+    } catch (contractError) {
+      setError(errorMessage(contractError))
+    } finally {
+      setIsResolvingAction(false)
     }
   }
 
@@ -267,7 +286,21 @@ function GamePage() {
               <p className="game-finished">Partida encerrada após 15 rodadas.</p>
             ) : activeSnapshot.phase === 'WAITING_FOR_ROUTE' ? (
               <>
-                <p>Escolha uma rota para {currentPlayer.name}:</p>
+                <p>
+                  {currentPlayer.activeContract
+                    ? `Escolha entre os caminhos disponíveis para ${currentPlayer.name}:`
+                    : `Escolha livremente uma rota para ${currentPlayer.name}:`}
+                </p>
+                {(currentPlayer.activeContract || activeSnapshot.availableContracts.length > 0) && (
+                  <button
+                    className="contract-card-button"
+                    type="button"
+                    disabled={isBusy}
+                    onClick={() => setIsContractModalOpen(true)}
+                  >
+                    {currentPlayer.activeContract ? 'Ver contrato ativo' : 'Ver contratos disponíveis'}
+                  </button>
+                )}
                 <div className="route-options">
                   {activeSnapshot.availableRoutes.map((route) => (
                     <button
@@ -276,7 +309,7 @@ function GamePage() {
                       disabled={isBusy}
                       onClick={() => void handleRouteSelection(route.id)}
                     >
-                      Ir para {route.destinationName}
+                      {route.name}
                     </button>
                   ))}
                 </div>
@@ -307,14 +340,26 @@ function GamePage() {
             ) : activeSnapshot.phase === 'WAITING_FOR_EVENT' ? (
               <p>Revele a carta de problema para concluir a jogada.</p>
             ) : (
-              <DiceRollButton
-                face={diceFace}
-                disabled={isBusy || !board}
-                onClick={() => void handleRoll()}
-                onAssetError={() =>
-                  setError('Não foi possível carregar uma face do dado.')
-                }
-              />
+              <>
+                <DiceRollButton
+                  face={diceFace}
+                  disabled={isBusy || !board}
+                  onClick={() => void handleRoll()}
+                  onAssetError={() =>
+                    setError('Não foi possível carregar uma face do dado.')
+                  }
+                />
+                {currentPlayer.activeContract && (
+                  <button
+                    className="contract-card-button contract-card-button--floating"
+                    type="button"
+                    disabled={isBusy}
+                    onClick={() => setIsContractModalOpen(true)}
+                  >
+                    Ver contrato ativo
+                  </button>
+                )}
+              </>
             )}
 
             {error && <p className="game-action-error" role="alert">{error}</p>}
@@ -348,6 +393,19 @@ function GamePage() {
             playerName={activeSnapshot.players[activeSnapshot.pendingProblemCard.playerIndex].name}
             isConfirming={isResolvingAction}
             onConfirm={() => void handleEventConfirmation()}
+          />
+        )}
+
+        {isContractModalOpen && (
+          <ContractCardModal
+            contracts={currentPlayer.activeContract
+              ? [currentPlayer.activeContract]
+              : activeSnapshot.availableContracts}
+            playerName={currentPlayer.name}
+            canAccept={!currentPlayer.activeContract}
+            isAccepting={isResolvingAction}
+            onAccept={(contractId) => void handleContractAcceptance(contractId)}
+            onClose={() => setIsContractModalOpen(false)}
           />
         )}
       </div>
